@@ -1,0 +1,774 @@
+<h1>Protocol name: VSSDCP</h1>
+
+<h2>Important</h2>
+
+<ul>
+<li><strong>multi-byte values</strong>:  <strong>most significant bytes</strong> are transferred at first, <code>0x1234</code> ->  <code>0x12</code> at first, then <code>0x34</code> (<em>big endian</em>)</li>
+</ul>
+
+
+<h2>Acknowledge</h2>
+
+<ul>
+<li>ACKs are optional and may be disabled or enabled by the client.</li>
+<li>ACKs are sent from the server to a client and may contain a payload (events, &hellip;)</li>
+<li>Command <em>draw window</em> may send <em>simpleACK</em>s between chunks (if requested by the client). A <em>simpleACK</em> must not contain a payload.</li>
+<li><p>An ACK is a <code>signed char</code> in <code>[-32, +32]</code> and is defined as following:</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> &nbsp; ACK code &nbsp; </th>
+<th style="text-align:left;"> description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">   <code>ack &lt; 0</code>    </td>
+<td style="text-align:left;"> error occured (nACK)</td>
+</tr>
+<tr>
+<td style="text-align:center;">   <code>ack = 0</code>    </td>
+<td style="text-align:left;"> acknowledge, no event attached</td>
+</tr>
+<tr>
+<td style="text-align:center;">   <code>ack &gt; 0</code>    </td>
+<td style="text-align:left;"> acknowledge, event with &lt;ack&gt; bytes attached</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+
+
+<hr />
+
+<h2>Commands supported by the protocol:</h2>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> command ID </th>
+<th style="text-align:left;"> description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">    <code>I</code>     </td>
+<td style="text-align:left;"> initialise and get information</td>
+</tr>
+<tr>
+<td style="text-align:center;">    <code>C</code>     </td>
+<td style="text-align:left;"> clear screen</td>
+</tr>
+<tr>
+<td style="text-align:center;">    <code>b</code>     </td>
+<td style="text-align:left;"> set background colour</td>
+</tr>
+<tr>
+<td style="text-align:center;">    <code>f</code>     </td>
+<td style="text-align:left;"> set foreground colour</td>
+</tr>
+<tr>
+<td style="text-align:center;">    <code>s</code>     </td>
+<td style="text-align:left;"> set pixel (using foreground colour)</td>
+</tr>
+<tr>
+<td style="text-align:center;">    <code>c</code>     </td>
+<td style="text-align:left;"> clear pixel (sets background colour)</td>
+</tr>
+<tr>
+<td style="text-align:center;">    <code>D</code>     </td>
+<td style="text-align:left;"> draw window</td>
+</tr>
+<tr>
+<td style="text-align:center;">    <code>U</code>     </td>
+<td style="text-align:left;"> execute updates</td>
+</tr>
+<tr>
+<td style="text-align:center;">    <code>F</code>     </td>
+<td style="text-align:left;"> set feature value</td>
+</tr>
+<tr>
+<td style="text-align:center;">    <code>X</code>     </td>
+<td style="text-align:left;"> close display</td>
+</tr>
+</tbody>
+</table>
+
+
+<hr />
+
+<h2>I &hellip; initialise and get information</h2>
+
+<pre><code>-&gt; 'I' &lt;flags&gt;
+&lt;- item {';' item} '\0'
+</code></pre>
+
+<p>initialises the display and fetches information about it.</p>
+
+<ul>
+<li><p><strong>flags</strong></p>
+
+<ul>
+<li><p><code>&lt;flags&gt;</code> is one byte wide.</p></li>
+<li><p>the bitmask in <code>&lt;flags&gt;</code> can be used by the client to give some hints to the server:</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:right;"> bit(s) </th>
+<th> </th>
+<th style="text-align:left;"> description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">    7   </td>
+<td> </td>
+<td style="text-align:left;"> (reserved)</td>
+</tr>
+<tr>
+<td style="text-align:right;">    6   </td>
+<td> </td>
+<td style="text-align:left;"> (reserved)</td>
+</tr>
+<tr>
+<td style="text-align:right;">    5   </td>
+<td> </td>
+<td style="text-align:left;"> (reserved)</td>
+</tr>
+<tr>
+<td style="text-align:right;">    4   </td>
+<td> </td>
+<td style="text-align:left;"> (reserved)</td>
+</tr>
+<tr>
+<td style="text-align:right;">    3   </td>
+<td> </td>
+<td style="text-align:left;"> (reserved)</td>
+</tr>
+<tr>
+<td style="text-align:right;">    2   </td>
+<td> </td>
+<td style="text-align:left;"> event support</td>
+</tr>
+<tr>
+<td style="text-align:right;">        </td>
+<td> </td>
+<td style="text-align:left;"> <code>xxxx x0xx</code>: client doesn&rsquo;t support events (GPIs)</td>
+</tr>
+<tr>
+<td style="text-align:right;">        </td>
+<td> </td>
+<td style="text-align:left;"> <code>xxxx x1xx</code>: client supports events</td>
+</tr>
+<tr>
+<td style="text-align:right;">  1-0   </td>
+<td> </td>
+<td style="text-align:left;"> acknowledge type</td>
+</tr>
+<tr>
+<td style="text-align:right;">        </td>
+<td> </td>
+<td style="text-align:left;"> <code>xxxx xx00</code>: no acknowledge  (=> events must be queried using a command or an interrupt is triggered at the client)</td>
+</tr>
+<tr>
+<td style="text-align:right;">        </td>
+<td> </td>
+<td style="text-align:left;"> <code>xxxx xx01</code>: ACKs only  (ACK may contain a reference to an event)</td>
+</tr>
+<tr>
+<td style="text-align:right;">        </td>
+<td> </td>
+<td style="text-align:left;"> <code>xxxx xx10</code>: ACKs and simpleACKs (ACK may contain a reference to an event)</td>
+</tr>
+<tr>
+<td style="text-align:right;">        </td>
+<td> </td>
+<td style="text-align:left;"> <code>xxxx xx11</code>: (reserved)</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+</li>
+<li><p><strong>item</strong></p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;"> definition                                     </th>
+<th> </th>
+<th style="text-align:right;"> # bytes  </th>
+<th> </th>
+<th style="text-align:left;"> description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">  <code>'N' '=' &lt;up to 32 chars&gt;</code>                    </td>
+<td> </td>
+<td style="text-align:right;">   <code>&lt;=32</code> </td>
+<td> </td>
+<td style="text-align:left;"> <strong>name</strong> of display / module</td>
+</tr>
+<tr>
+<td style="text-align:left;">  <code>'V' '=' &lt;major version&gt; '.' &lt;minor version&gt;</code> </td>
+<td> </td>
+<td style="text-align:right;">   <code>&lt;= 4</code> </td>
+<td> </td>
+<td style="text-align:left;"> <strong>version</strong> of VSSDCP, major version in <code>[0, 99]</code>, minor version in <code>[0, 9]</code></td>
+</tr>
+<tr>
+<td style="text-align:left;">  <code>'W' '=' &lt;width&gt;</code>                             </td>
+<td> </td>
+<td style="text-align:right;">    <code>= 2</code> </td>
+<td> </td>
+<td style="text-align:left;"> <strong>width</strong> of display, width in <code>[0, 65535]</code></td>
+</tr>
+<tr>
+<td style="text-align:left;">  <code>'H' '=' &lt;height&gt;</code>                            </td>
+<td> </td>
+<td style="text-align:right;">    <code>= 2</code> </td>
+<td> </td>
+<td style="text-align:left;"> <strong>height</strong> of display, height in <code>[0, 65535]</code></td>
+</tr>
+<tr>
+<td style="text-align:left;">  <code>'P' '=' &lt;bpp&gt;</code>                               </td>
+<td> </td>
+<td style="text-align:right;">    <code>= 1</code> </td>
+<td> </td>
+<td style="text-align:left;"> <strong>bitplanes</strong> used, bpp in <code>[0, 255]</code></td>
+</tr>
+<tr>
+<td style="text-align:left;">  <code>'C' '=' &lt;colour format&gt;</code>                     </td>
+<td> </td>
+<td style="text-align:right;">   <code>&lt;= 8</code> </td>
+<td> </td>
+<td style="text-align:left;"> <strong>colour format</strong>, eg. <code>RGB565</code>, sum of colour channel depths must match bpp</td>
+</tr>
+<tr>
+<td style="text-align:left;">  <code>'B' '=' &lt;buffersize times 8&gt;</code>                </td>
+<td> </td>
+<td style="text-align:right;">    <code>= 1</code> </td>
+<td> </td>
+<td style="text-align:left;"> <strong>buffersize * 8</strong>: max buffersize for a single payload</td>
+</tr>
+<tr>
+<td style="text-align:left;">  <code>'F' '=' features</code>                            </td>
+<td> </td>
+<td style="text-align:right;">          </td>
+<td> </td>
+<td style="text-align:left;"> <em>see features</em></td>
+</tr>
+</tbody>
+</table>
+
+
+<ul>
+<li><p><strong>colour format</strong></p>
+
+<p>also see additional documentation for class arrays  <code>colour_order[]</code> and <code>colour_channel[]</code></p></li>
+<li><p><strong>buffer size</strong></p>
+
+<p>buffer size for payload: <code>&lt;buffersize&gt; == 8</code>:  <code>buffersize = 8 * 8 =&gt; 64</code></p></li>
+<li><p><strong>features</strong></p>
+
+<ul>
+<li><p><code>{ &lt;feature code&gt; &lt;value&gt;  }</code></p></li>
+<li><p>range for <code>&lt;value&gt;</code>: <code>[0, 255]</code></p></li>
+<li><p><strong>feature code</strong></p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;"> feature          </th>
+<th> </th>
+<th> </th>
+<th style="text-align:left;"> description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">  <code>'A' &lt;value&gt;</code>   </td>
+<td> </td>
+<td> </td>
+<td style="text-align:left;"> acknowledge-type (see flags)</td>
+</tr>
+<tr>
+<td style="text-align:left;">  <code>'b' (0 | 1)</code>  </td>
+<td> </td>
+<td> </td>
+<td style="text-align:left;"> backlight support yes (1) or no (0)</td>
+</tr>
+<tr>
+<td style="text-align:left;">  <code>'e' (0 | 1)</code>  </td>
+<td> </td>
+<td> </td>
+<td style="text-align:left;"> self-emitting yes (1) or no (0)</td>
+</tr>
+<tr>
+<td style="text-align:left;">  <code>'i' (0 | 1)</code>  </td>
+<td> </td>
+<td> </td>
+<td style="text-align:left;"> server can invert image (1) or not (0)</td>
+</tr>
+<tr>
+<td style="text-align:left;">  <code>'p' (0 | 1)</code>  </td>
+<td> </td>
+<td> </td>
+<td style="text-align:left;"> server cannot set a single pixel (1) or can set a single pixel (0)</td>
+</tr>
+<tr>
+<td style="text-align:left;">  <code>'u' (0 | 1)</code>  </td>
+<td> </td>
+<td> </td>
+<td style="text-align:left;"> commit changes: extra update command needed (0) or drawing commands update immediately (1)</td>
+</tr>
+<tr>
+<td style="text-align:left;">  <code>'B' &lt;value&gt;</code>   </td>
+<td> </td>
+<td> </td>
+<td style="text-align:left;"> brightness support, 0: not supported, > 0: max supported level</td>
+</tr>
+<tr>
+<td style="text-align:left;">  <code>'C' (0 | 1)</code>  </td>
+<td> </td>
+<td> </td>
+<td style="text-align:left;"> contrast support yes (1) or no (0)</td>
+</tr>
+<tr>
+<td style="text-align:left;">  <code>'I' &lt;value&gt;</code>   </td>
+<td> </td>
+<td> </td>
+<td style="text-align:left;"> amount of GPIs, 0: not supported / no GPIs, > 1: amount of GPIs</td>
+</tr>
+<tr>
+<td style="text-align:left;">  <code>'O' &lt;value&gt;</code>   </td>
+<td> </td>
+<td> </td>
+<td style="text-align:left;"> amount of GPOs, 0: not supported / no GPOs, > 1: amount of GPOs</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li><p><strong>note</strong>:</p>
+
+<p>features not given default to 0</p></li>
+<li><p><strong>examples</strong>:  (strings must be null terminated)</p>
+
+<p> <code>N=Some fancy name;V=1.0;W=320;H=240;P=16;C=RGB565;F=b1I3</code></p>
+
+<p> <code>N=RGB Matrix panel;V=1.0;W=64;H=32;P=16;C=RGB565;F=e1</code></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<hr />
+
+<h2>C &hellip; clear screen</h2>
+
+<pre><code>-&gt; 'C'
+&lt;- ACK
+</code></pre>
+
+<p>clears the screen</p>
+
+<ul>
+<li><p><strong>note</strong>:</p>
+
+<p>display is NOT updated (call command &lsquo;U&rsquo; to do so)</p></li>
+</ul>
+
+
+<hr />
+
+<h2>b &hellip; set background colour</h2>
+
+<pre><code>-&gt; 'b' &lt;colour&gt;
+&lt;- ACK
+</code></pre>
+
+<p>sets the background colour</p>
+
+<ul>
+<li><p><strong>colour</strong></p>
+
+<p>number of bytes according to BPP => <code>(bpp + 7) % 8</code></p></li>
+</ul>
+
+
+<hr />
+
+<h2>f &hellip; set foreground colour</h2>
+
+<pre><code>-&gt; 'f' &lt;colour&gt;
+&lt;- ACK
+</code></pre>
+
+<p>sets the background colour</p>
+
+<ul>
+<li><p><strong>colour</strong></p>
+
+<p>number of bytes according to BPP => <code>(bpp + 7) % 8</code></p></li>
+</ul>
+
+
+<hr />
+
+<h2>s &hellip; set pixel</h2>
+
+<pre><code>-&gt; 's' &lt;x&gt; &lt;y&gt;
+&lt;- ACK
+</code></pre>
+
+<p>sets a pixel at the given position using foreground colour.</p>
+
+<ul>
+<li><p><strong>x</strong></p>
+
+<p>x-position, x in <code>[0, 65535]</code></p></li>
+<li><p><strong>y</strong></p>
+
+<p>y-position, y in <code>[0, 65535]</code></p></li>
+<li><p><strong>note</strong>:</p>
+
+<p>display is NOT updated (call command &lsquo;U&rsquo; to do so)</p></li>
+</ul>
+
+
+<hr />
+
+<h2>c &hellip; clear pixel</h2>
+
+<pre><code>-&gt; 'c' &lt;x&gt; &lt;y&gt;
+&lt;- ACK
+</code></pre>
+
+<p>clears a pixel at the given position (pixel is drawn using the background colour).</p>
+
+<ul>
+<li><p><strong>x</strong></p>
+
+<p>x-position, x in <code>[0, 65535]</code></p></li>
+<li><p><strong>y</strong></p>
+
+<p>y-position, y in <code>[0, 65535]</code></p></li>
+<li><p><strong>note</strong>:</p>
+
+<p>display is NOT updated (call command &lsquo;U&rsquo; to do so)</p></li>
+</ul>
+
+
+<hr />
+
+<h2>D &hellip; draw window</h2>
+
+<pre><code>-&gt; 'D' &lt;x&gt; &lt;y&gt; &lt;w&gt; &lt;h&gt; {&lt;colourblock&gt; simpleACK } &lt;colourblock&gt;
+&lt;- ACK
+</code></pre>
+
+<p>draws a window.</p>
+
+<ul>
+<li><p><strong>x</strong></p>
+
+<p>x start position, x in <code>[0, 65535]</code></p></li>
+<li><p><strong>y</strong></p>
+
+<p>y start position, y in <code>[0, 65535]</code></p></li>
+<li><p><strong>w</strong></p>
+
+<p>width of window,  w in <code>[0, 65535]</code></p></li>
+<li><p><strong>h</strong></p>
+
+<p>height of window, h in <code>[0, 65535]</code></p></li>
+<li><p><strong>colourblock</strong></p>
+
+<p>serial of colour representations, one block contains at most <code>&lt;buffersize&gt;</code> bytes, followed by a <code>simpleACK</code> (if enabled)</p>
+
+<p>only the very last ACK may contain a payload (if ACKs are enabled)</p></li>
+<li><p><strong>note</strong>:</p>
+
+<p>display is NOT updated (call command &lsquo;U&rsquo; to do so)</p></li>
+</ul>
+
+
+<hr />
+
+<h2>U &hellip; update screen</h2>
+
+<pre><code>-&gt; 'U'
+&lt;- ACK
+</code></pre>
+
+<p>commits all changes and updates to the display.</p>
+
+<hr />
+
+<h2>F &hellip; set feature value</h2>
+
+<pre><code>-&gt; 'F' &lt;feature ID&gt; &lt;value&gt;
+&lt;- ACK
+</code></pre>
+
+<p>en/disables a feature / setting.</p>
+
+<ul>
+<li><p><strong>feature ID</strong></p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> feature ID   </th>
+<th> </th>
+<th> </th>
+<th style="text-align:left;"> description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">    <code>'b'</code>     </td>
+<td> </td>
+<td> </td>
+<td style="text-align:left;"> backlight, 0: backlight off, 1: backlight on</td>
+</tr>
+<tr>
+<td style="text-align:center;">    <code>'c'</code>     </td>
+<td> </td>
+<td> </td>
+<td style="text-align:left;"> contrast, <code>[0 .. 10]</code>, normalisation a.s.o. is done by the server</td>
+</tr>
+<tr>
+<td style="text-align:center;">    <code>'i'</code>     </td>
+<td> </td>
+<td> </td>
+<td style="text-align:left;"> invert screen, 0: normal display, 1: inverted display</td>
+</tr>
+<tr>
+<td style="text-align:center;">    <code>'B'</code>     </td>
+<td> </td>
+<td> </td>
+<td style="text-align:left;"> brightness, <code>[0 .. max value]</code>   (see above)</td>
+</tr>
+<tr>
+<td style="text-align:center;">    <code>'I'</code>     </td>
+<td> </td>
+<td> </td>
+<td style="text-align:left;"> enable/disable GPIs, 0: disable GPI events, 1: enable GPI events</td>
+</tr>
+<tr>
+<td style="text-align:center;">    <code>'O'</code>     </td>
+<td> </td>
+<td> </td>
+<td style="text-align:left;"> enable/disable GPOs, 0: disable GPO events, 1: enable GPO events</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li><p><strong>note</strong>:</p>
+
+<p>a feature ID is only handled, if supported by driver (see command <code>'I'</code>, section &lsquo;flags&rsquo;).</p></li>
+</ul>
+
+
+<hr />
+
+<h2>X &hellip; close display</h2>
+
+<pre><code>-&gt; 'X'
+&lt;- ACK
+</code></pre>
+
+<p>closes the display.</p>
+
+<ul>
+<li><p><strong>note</strong>:</p>
+
+<p>screen is NOT cleared by this command!</p></li>
+</ul>
+
+
+<hr />
+
+<hr />
+
+<h2>colour formats</h2>
+
+<ul>
+<li><p>the <em>colour format</em> is set by defining two arrays:</p>
+
+<ul>
+<li><p><code>int8_t colourOrder[4]</code></p>
+
+<ul>
+<li>the four values contain the <strong>order</strong> of the colour channels <code>A</code>, <code>R</code>, <code>G</code>, <code>B</code></li>
+<li><code>colourOrder[0]</code> is for <code>A</code>, <code>[1]</code> for <code>R</code>, <code>[2]</code> for <code>G</code>, and <code>[3]</code> for <code>B</code></li>
+<li><code>-1</code> is set if a channel is unused (eg. <code>colorOrder[0] = -1</code> &hellip; no alpha channel)</li>
+</ul>
+</li>
+<li><p><code>byte colourChannel[4]</code></p>
+
+<ul>
+<li>amount of planes used for this channel</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>note</strong>:
+if only <code>R</code> is active: <code>[ -1, 0, -1, -1 ]</code> => display is either monochrome (<code>planes == 1</code>) or greyscale (<code>planes &gt; 1</code>)</p>
+
+<p>colour format for these cases is: <code>K1</code> (monochrome), <code>K2</code>, <code>K4</code>, <code>K8</code>  (greyscale)   (<code>K</code> as in <em>blac<strong>K</strong></em>)</p></li>
+<li><p><strong>examples</strong>:</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;"> colourOrder              </th>
+<th> </th>
+<th style="text-align:left;"> colourChannel            </th>
+<th> </th>
+<th style="text-align:left;"> resulting colour format</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;"> <code>[ 3, 2, 1, 0 ]</code>         </td>
+<td> </td>
+<td style="text-align:left;">                          </td>
+<td> </td>
+<td style="text-align:left;"> order <code>B</code>, <code>G</code>, <code>R</code>, <code>A</code> is used</td>
+</tr>
+<tr>
+<td style="text-align:left;">                          </td>
+<td> </td>
+<td style="text-align:left;"> <code>[ 8, 8, 8, 8 ]</code>         </td>
+<td> </td>
+<td style="text-align:left;"> all 4 channels have 8 planes</td>
+</tr>
+<tr>
+<td style="text-align:left;">                          </td>
+<td> </td>
+<td style="text-align:left;">                          </td>
+<td> </td>
+<td style="text-align:left;"> => colour format is <code>BGRA8888</code></td>
+</tr>
+<tr>
+<td style="text-align:left;"> &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; </td>
+<td> </td>
+<td style="text-align:left;"> &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; </td>
+<td> </td>
+<td style="text-align:left;"> &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</td>
+</tr>
+<tr>
+<td style="text-align:left;"> <code>[ -1, 0, 1, 2 ]</code>        </td>
+<td> </td>
+<td style="text-align:left;">                          </td>
+<td> </td>
+<td style="text-align:left;"> RGB is used, alpha channel is not used ( = -1 )</td>
+</tr>
+<tr>
+<td style="text-align:left;">                          </td>
+<td> </td>
+<td style="text-align:left;"> <code>[ 0, 5, 6, 5]</code>          </td>
+<td> </td>
+<td style="text-align:left;"> alpha: not used, red: 5 planes, green: 6 planes, blue: 5 planes</td>
+</tr>
+<tr>
+<td style="text-align:left;">                          </td>
+<td> </td>
+<td style="text-align:left;">                          </td>
+<td> </td>
+<td style="text-align:left;"> => colour format is <code>RGB565</code></td>
+</tr>
+<tr>
+<td style="text-align:left;"> &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; </td>
+<td> </td>
+<td style="text-align:left;"> &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; </td>
+<td> </td>
+<td style="text-align:left;"> &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</td>
+</tr>
+<tr>
+<td style="text-align:left;"> <code>[ -1, 0, -1, -1]</code>       </td>
+<td> </td>
+<td style="text-align:left;">                          </td>
+<td> </td>
+<td style="text-align:left;"> only red is active -> monochrome or greyscale</td>
+</tr>
+<tr>
+<td style="text-align:left;">                          </td>
+<td> </td>
+<td style="text-align:left;"> <code>[ 0, 1, 0, 0]</code>          </td>
+<td> </td>
+<td style="text-align:left;"> only one plane -> monochrome</td>
+</tr>
+<tr>
+<td style="text-align:left;">                          </td>
+<td> </td>
+<td style="text-align:left;">                          </td>
+<td> </td>
+<td style="text-align:left;"> => colour format is <code>K1</code></td>
+</tr>
+<tr>
+<td style="text-align:left;"> &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; </td>
+<td> </td>
+<td style="text-align:left;"> &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; </td>
+<td> </td>
+<td style="text-align:left;"> &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</td>
+</tr>
+<tr>
+<td style="text-align:left;"> <code>[ -1, 0, -1, -1]</code>       </td>
+<td> </td>
+<td style="text-align:left;">                          </td>
+<td> </td>
+<td style="text-align:left;"> only red is active -> monochrome or greyscale</td>
+</tr>
+<tr>
+<td style="text-align:left;">                          </td>
+<td> </td>
+<td style="text-align:left;"> <code>[ 0, 4, 0, 0]</code>          </td>
+<td> </td>
+<td style="text-align:left;"> four planes -> greyscale</td>
+</tr>
+<tr>
+<td style="text-align:left;">                          </td>
+<td> </td>
+<td style="text-align:left;">                          </td>
+<td> </td>
+<td style="text-align:left;"> => colour format is <code>K4</code></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li><p>only the <strong>following combinations</strong> are supported at the moment:</p>
+
+<ul>
+<li><p><strong>supported monochrome and greyscale modes</strong>:</p>
+
+<ul>
+<li><code>K1</code> (monochrome)</li>
+<li><code>K2</code> (4 grey levels)</li>
+<li><code>K4</code> (16 grey levels)</li>
+<li><code>K8</code> (256 grey levels)</li>
+</ul>
+</li>
+<li><p><strong>supported colour modes and colour orders</strong>:</p>
+
+<ul>
+<li><code>ARGB</code></li>
+<li><code>ABGR</code></li>
+<li><code>RGBA</code></li>
+<li><code>BGRA</code></li>
+<li><code>RGB</code></li>
+<li><code>BGR</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+

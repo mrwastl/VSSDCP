@@ -1,0 +1,104 @@
+<h1>VSSDCP: Communication protocol used by serdisplib to control display modules</h1>
+
+<h2>Introduction</h2>
+
+<p>Communication libraries</p>
+
+<ul>
+<li><p>VSSDCP_base is an abstract class and cannot be used directly but is required for all derived classes.</p></li>
+<li><p>VSSDCP_serial implements serial communication (via serial port or USB).</p></li>
+<li>VSSDCP_ethernet implements communication to an &lsquo;Ethernet Shield&rsquo; via ethernet.</li>
+<li>VSSDCP_uipethernet implements communicaiton to an ENC28J60-based ethernet board.</li>
+</ul>
+
+
+<p>To be able to get a working VSSDCP implementation on a Teensy or Arduino-board, at least VSSDCP_base must be installed
+and one of the other VSSDCP_* libraries.</p>
+
+<p>Required libraries (PC / Linux):</p>
+
+<ul>
+<li><p><strong>serdisplib</strong></p>
+
+<p>Branch of serdisplib with very experimental support for VSSDCP  (author: Wolfgang Astleitner)</p></li>
+</ul>
+
+
+<p>Required additional libraries on a Teensy or Arduino-board:</p>
+
+<ul>
+<li><p><strong>SmartMatrix</strong></p>
+
+<p>either original version:  max. 32x32 pixels (author: Louis Beaudoin)</p>
+
+<p>or my <em>fork</em> with <em>multi-panel support</em></p></li>
+<li><p>display library</p>
+
+<p>library that supports your display module</p></li>
+</ul>
+
+
+<p>Getting these libraries:</p>
+
+<ul>
+<li><p><strong>serdisplib</strong></p>
+
+<p><code>svn checkout  https://svn.code.sf.net/p/serdisplib/code/serdisplib/branches/vssdcp serdisplib.vssdcp</code></p></li>
+<li><p><strong>SmartMatrix</strong> (original version)</p>
+
+<p><code>git clone https://github.com/pixelmatix/SmartMatrix SmartMatrix</code>  &nbsp;&nbsp;&nbsp;#original version</p></li>
+<li><p><strong>SmartMatrix</strong> (my fork with multi-panel support)</p>
+
+<p><code>git clone https://github.com/mrwastl/SmartMatrix SmartMatrix</code></p></li>
+</ul>
+
+
+<h2>Important</h2>
+
+<p>Only VSSDCP_serial is working in a usable way, VSSDCP_ethernet and VSSDCP_uipethernet are very error-prone and unreliable
+(either because of errors in the VSSDCP-implementation of serdisplib or because of the VSSDCP_* libraries).
+Improvements and/or ideas for better implementation of communication are very appreciated.</p>
+
+<h2>Installation</h2>
+
+<p>The folder &lsquo;VSSDCP&rsquo; contains several libraries.
+At least library VSSDCP_base has to be installed and one of the other VSSDCP_* libraries.</p>
+
+<h2>Usage</h2>
+
+<p>One of the VSSDCP_* classes (VSSDCP_serial, VSSDCP_ethernet, VSSDCP_uipethernet) needs to initialise a class that passes
+the commands to the display library.</p>
+
+<p>E.g.:</p>
+
+<pre><code>class VSSDCP_somedisplay : public VSSDCP_serial {
+         VSSDCP_somedisplay (void) { }
+  void   setup              (void) { /* setup display module, setup VSSDCP */ }
+}
+</code></pre>
+
+<p>VSSDCP_base contains some examples.</p>
+
+<h2>Testing</h2>
+
+<p>Testing the correct communication with serdisplib (serial communication, Teensy only (baud-rate is not required)):</p>
+
+<p><code>src/testserdisp -n vssdcp</code></p>
+
+<p><code>src/testserdisp -n vssdcp -o "brightness=30;acknowledge=0"</code></p>
+
+<p>If an arduino-based board is used, you have to set an appropriate baud-rate (both in your arduino-sketch and in serdisplib):</p>
+
+<p><code>src/testserdisp -n vssdcp -o "brightness=30;baud=9600"</code></p>
+
+<h2>mplayer</h2>
+
+<p>I&rsquo;ve programmed a batch for mplayer to support my library:</p>
+
+<p>https://github.com/mrwastl/mplayer-vo_serdisp</p>
+
+<p>The README.md contains the instructions for patching mplayer-soruce and compilation.</p>
+
+<p>Command line example:</p>
+
+<p><code>LD_LIBRARY_PATH=/path_to_serdisplib_with_vssdcp_support/lib  ./mplayer -vo "serdisp:name=vssdcp:viewmode=1:options=brightness=30;acktype=0"  -framedrop -ao null somevideo.mp4</code></p>
