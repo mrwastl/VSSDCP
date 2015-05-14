@@ -55,35 +55,35 @@ initialises the display and fetches information about it.
 
   * the bitmask in `<flags>` can be used by the client to give some hints to the server:
 
-    | bit(s) | | description
-    |-------:|-|:---------------
-    |    7   | | (reserved)
-    |    6   | | (reserved)
-    |    5   | | (reserved)
-    |    4   | | (reserved)
-    |    3   | | (reserved)
-    |    2   | | event support
-    |        | | `xxxx x0xx`: client doesn't support events (GPIs)
-    |        | | `xxxx x1xx`: client supports events
-    |  1-0   | | acknowledge type
-    |        | | `xxxx xx00`: no acknowledge  (=> events must be queried using a command or an interrupt is triggered at the client)
-    |        | | `xxxx xx01`: ACKs only  (ACK may contain a reference to an event)
-    |        | | `xxxx xx10`: ACKs and simpleACKs (ACK may contain a reference to an event)
-    |        | | `xxxx xx11`: (reserved)
+   | bit(s) | description
+   |-------:|:---------------
+   |    7   | (reserved)
+   |    6   | (reserved)
+   |    5   | (reserved)
+   |    4   | (reserved)
+   |    3   | (reserved)
+   |    2   | event support
+   |        | `xxxx x0xx`: client doesn't support events (GPIs)
+   |        | `xxxx x1xx`: client supports events
+   |  1-0   | acknowledge type
+   |        | `xxxx xx00`: no acknowledge  (=> events must be queried using a command or an interrupt is triggered at the client)
+   |        | `xxxx xx01`: ACKs only  (ACK may contain a reference to an event)
+   |        | `xxxx xx10`: ACKs and simpleACKs (ACK may contain a reference to an event)
+   |        | `xxxx xx11`: (reserved)
 
 
 * **item**
 
-  | definition                                     | | # bytes  | | description
-  |:-----------------------------------------------|-|---------:|-|:-------------------
-  |  `'N' '=' <up to 32 chars>`                    | |   `<=32` | | **name** of display / module
-  |  `'V' '=' <major version> '.' <minor version>` | |   `<= 4` | | **version** of VSSDCP, major version in `[0, 99]`, minor version in `[0, 9]`
-  |  `'W' '=' <width>`                             | |    `= 2` | | **width** of display, width in `[0, 65535]`
-  |  `'H' '=' <height>`                            | |    `= 2` | | **height** of display, height in `[0, 65535]`
-  |  `'P' '=' <bpp>`                               | |    `= 1` | | **bitplanes** used, bpp in `[0, 255]`
-  |  `'C' '=' <colour format>`                     | |   `<= 8` | | **colour format**, eg. `RGB565`, sum of colour channel depths must match bpp
-  |  `'B' '=' <buffersize times 8>`                | |    `= 1` | | **buffersize * 8**: max buffersize for a single payload
-  |  `'F' '=' features`                            | |          | | *see features*
+  | definition                                     | #&nbsp;bytes  | description
+  |:-----------------------------------------------|---------:|:-------------------
+  |  `'N' '=' <up to 32 chars>`                    |   `<=32` | **name** of display / module
+  |  `'V' '=' <major version> '.' <minor version>` |   `<= 4` | **version** of VSSDCP, major version in `[0, 99]`, minor version in `[0, 9]`
+  |  `'W' '=' <width>`                             |    `= 2` | **width** of display, width in `[0, 65535]`
+  |  `'H' '=' <height>`                            |    `= 2` | **height** of display, height in `[0, 65535]`
+  |  `'P' '=' <bpp>`                               |    `= 1` | **bitplanes** used, bpp in `[0, 255]`
+  |  `'C' '=' <colour format>`                     |   `<= 8` | **colour format**, eg. `RGB565`, sum of colour channel depths must match bpp
+  |  `'B' '=' <buffersize times 8>`                |    `= 1` | **buffersize * 8**: max buffersize for a single payload
+  |  `'F' '=' features`                            |          | *see features*
 
 
   * **colour format**
@@ -102,18 +102,18 @@ initialises the display and fetches information about it.
 
     * **feature code**
 
-      | feature          | | | description
-      |:-----------------|-|-|:-----------------------
-      |  `'A' <value>`   | | | acknowledge-type (see flags)
-      |  `'b' (0 \| 1)`  | | | backlight support yes (1) or no (0)
-      |  `'e' (0 \| 1)`  | | | self-emitting yes (1) or no (0)
-      |  `'i' (0 \| 1)`  | | | server can invert image (1) or not (0)
-      |  `'p' (0 \| 1)`  | | | server cannot set a single pixel (1) or can set a single pixel (0)
-      |  `'u' (0 \| 1)`  | | | commit changes: extra update command needed (0) or drawing commands update immediately (1)
-      |  `'B' <value>`   | | | brightness support, 0: not supported, > 0: max supported level
-      |  `'C' (0 \| 1)`  | | | contrast support yes (1) or no (0)
-      |  `'I' <value>`   | | | amount of GPIs, 0: not supported / no GPIs, > 1: amount of GPIs
-      |  `'O' <value>`   | | | amount of GPOs, 0: not supported / no GPOs, > 1: amount of GPOs
+      | feature | description
+      |:-----------------|:------------------------------------------------
+      |  `'A'<value>`   | acknowledge-type (see flags)
+      |  `'b'(0 | 1)`   | backlight support yes (1) or no (0)
+      |  `'e'(0 | 1)`   | self-emitting yes (1) or no (0)
+      |  `'i'(0 | 1)`   | server can invert image (1) or not (0)
+      |  `'p'(0 | 1)`   | server cannot set a single pixel (1) or can set a single pixel (0)
+      |  `'u'(0 | 1)`   | commit changes: extra update command needed (0) or drawing commands update immediately (1)
+      |  `'B'<value>`   | brightness support, 0: not supported, > 0: max supported level
+      |  `'C'(0 | 1)`   | contrast support yes (1) or no (0)
+      |  `'I'<value>`   | amount of GPIs, 0: not supported / no GPIs, > 1: amount of GPIs
+      |  `'O'<value>`   | amount of GPOs, 0: not supported / no GPOs, > 1: amount of GPOs
 
     * **note**:
 
@@ -264,14 +264,14 @@ en/disables a feature / setting.
 
 * **feature ID**
 
-  | feature ID   | | | description
-  |:------------:|-|-|:-----------
-  |    `'b'`     | | | backlight, 0: backlight off, 1: backlight on
-  |    `'c'`     | | | contrast, `[0 .. 10]`, normalisation a.s.o. is done by the server
-  |    `'i'`     | | | invert screen, 0: normal display, 1: inverted display
-  |    `'B'`     | | | brightness, `[0 .. max value]`   (see above)
-  |    `'I'`     | | | enable/disable GPIs, 0: disable GPI events, 1: enable GPI events
-  |    `'O'`     | | | enable/disable GPOs, 0: disable GPO events, 1: enable GPO events
+  | feature ID   | description
+  |:------------:|:-----------
+  |    `'b'`     | backlight, 0: backlight off, 1: backlight on
+  |    `'c'`     | contrast, `[0 .. 10]`, normalisation a.s.o. is done by the server
+  |    `'i'`     | invert screen, 0: normal display, 1: inverted display
+  |    `'B'`     | brightness, `[0 .. max value]`   (see above)
+  |    `'I'`     | enable/disable GPIs, 0: disable GPI events, 1: enable GPI events
+  |    `'O'`     | enable/disable GPOs, 0: disable GPO events, 1: enable GPO events
 
 
 * **note**:
@@ -319,23 +319,23 @@ colour formats
 
 * **examples**:
 
-  | colourOrder              | | colourChannel            | | resulting colour format
-  |:-------------------------|-|:-------------------------|-|:-----------------------
-  | `[ 3, 2, 1, 0 ]`         | |                          | | order `B`, `G`, `R`, `A` is used
-  |                          | | `[ 8, 8, 8, 8 ]`         | | all 4 channels have 8 planes
-  |                          | |                          | | => colour format is `BGRA8888`
-  | ------------------------ | | ------------------------ | | ---------------------------------------------
-  | `[ -1, 0, 1, 2 ]`        | |                          | | RGB is used, alpha channel is not used ( = -1 )
-  |                          | | `[ 0, 5, 6, 5]`          | | alpha: not used, red: 5 planes, green: 6 planes, blue: 5 planes
-  |                          | |                          | | => colour format is `RGB565`
-  | ------------------------ | | ------------------------ | | ---------------------------------------------
-  | `[ -1, 0, -1, -1]`       | |                          | | only red is active -> monochrome or greyscale
-  |                          | | `[ 0, 1, 0, 0]`          | | only one plane -> monochrome
-  |                          | |                          | | => colour format is `K1`
-  | ------------------------ | | ------------------------ | | ---------------------------------------------
-  | `[ -1, 0, -1, -1]`       | |                          | | only red is active -> monochrome or greyscale
-  |                          | | `[ 0, 4, 0, 0]`          | | four planes -> greyscale
-  |                          | |                          | | => colour format is `K4`
+  | colourOrder              | colourChannel            | resulting colour format
+  |:-------------------------|:-------------------------|:-----------------------
+  | `[ 3, 2, 1, 0 ]`         |                          | order `B`, `G`, `R`, `A` is used
+  |                          | `[ 8, 8, 8, 8 ]`         | all 4 channels have 8 planes
+  |                          |                          | => colour format is `BGRA8888`
+  | ------------------------ | ------------------------ | ---------------------------------------------
+  | `[ -1, 0, 1, 2 ]`        |                          | RGB is used, alpha channel is not used ( = -1 )
+  |                          | `[ 0, 5, 6, 5]`          | alpha: not used, red: 5 planes, green: 6 planes, blue: 5 planes
+  |                          |                          | => colour format is `RGB565`
+  | ------------------------ | ------------------------ | ---------------------------------------------
+  | `[ -1, 0, -1, -1]`       |                          | only red is active -> monochrome or greyscale
+  |                          | `[ 0, 1, 0, 0]`          | only one plane -> monochrome
+  |                          |                          | => colour format is `K1`
+  | ------------------------ | ------------------------ | ---------------------------------------------
+  | `[ -1, 0, -1, -1]`       |                          | only red is active -> monochrome or greyscale
+  |                          | `[ 0, 4, 0, 0]`          | four planes -> greyscale
+  |                          |                          | => colour format is `K4`
 
 
 * only the **following combinations** are supported at the moment:
