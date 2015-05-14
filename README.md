@@ -46,7 +46,7 @@ Getting these libraries:
 
 * **SmartMatrix** (original version)
 
-  `git clone https://github.com/pixelmatix/SmartMatrix SmartMatrix`  &nbsp;&nbsp;&nbsp;#original version
+  `git clone https://github.com/pixelmatix/SmartMatrix SmartMatrix`
 
 * **SmartMatrix** (my fork with multi-panel support)
 
