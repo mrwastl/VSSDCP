@@ -1,3 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+
+  <title>PROTOCOL</title>
+<style type="text/css">
+    body {margin: 1em;}
+
+    a{ color: #0645ad; text-decoration:none;}
+    a:visited{ color: #0b0080; }
+    a:hover{ color: #06e; }
+    a:active{ color:#faa700; }
+    a:focus{ outline: thin dotted; }
+    a:hover, a:active{ outline: 0; }
+
+    p{margin:1em 0;}
+
+    img{max-width:100%;}
+
+    h1,h2,h3,h4,h5,h6{font-weight:normal;color:#111;line-height:1em;}
+    h4,h5,h6{ font-weight: bold; }
+    h1{ font-size:2.5em; }
+    h2{ font-size:2em; border-bottom:1px solid silver; padding-bottom: 5px; }
+    h3{ font-size:1.5em; }
+    h4{ font-size:1.2em; }
+    h5{ font-size:1em; }
+    h6{ font-size:0.9em; }
+
+    blockquote{color:#666666;margin:0;padding-left: 3em;border-left: 0.5em #EEE solid;}
+    hr { display: block; height: 2px; border: 0; border-top: 1px solid #aaa;border-bottom: 1px solid #eee; margin: 1em 0; padding: 0; }
+
+    pre, code{
+      color: #000;
+      font-family:Consolas, "Liberation Mono", Menlo, Courier, monospace;
+      font-size: 0.94em; /* 0.94 = 0.88 + (1.00 - 0.88) / 2 */
+      border-radius:3px;
+      background-color: #F8F8F8;
+      border: 1px solid #CCC;
+    }
+    pre { white-space: pre; white-space: pre-wrap; word-wrap: break-word; padding: 5px;}
+    pre code { border: 0px !important; background: transparent !important; line-height: 1.3em; }
+    code { padding: 0 3px 0 3px; }
+    sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
+    sup { top: -0.5em; }
+    sub { bottom: -0.25em; }
+    ul, ol { margin: 1em 0; padding: 0 0 0 2em; }
+    li p:last-child { margin:0 }
+    dd { margin: 0 0 0 2em; }
+    img { border: 0; -ms-interpolation-mode: bicubic; vertical-align: middle; }
+    table { border-collapse: collapse; border-spacing: 0; }
+    td, th { vertical-align: top; padding: 4px 10px; border: 1px solid #bbb; }
+    tr:nth-child(even) td, tr:nth-child(even) th { background: #eee; }
+  </style>
+
+
+ </head>
+<body>
 <h1>Protocol name: VSSDCP</h1>
 
 <h2>Important</h2>
@@ -112,86 +171,72 @@
 
 <ul>
 <li><p><code>&lt;flags&gt;</code> is one byte wide.</p></li>
-<li><p>the bitmask in <code>&lt;flags&gt;</code> can be used by the client to give some hints to the server:</p>
+<li><p>the bitmask in <code>&lt;flags&gt;</code> can be used by the client to give some hints to the server:</p></li>
+</ul>
+
 
 <table>
 <thead>
 <tr>
 <th style="text-align:right;"> bit(s) </th>
-<th> </th>
 <th style="text-align:left;"> description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:right;">    7   </td>
-<td> </td>
 <td style="text-align:left;"> (reserved)</td>
 </tr>
 <tr>
 <td style="text-align:right;">    6   </td>
-<td> </td>
 <td style="text-align:left;"> (reserved)</td>
 </tr>
 <tr>
 <td style="text-align:right;">    5   </td>
-<td> </td>
 <td style="text-align:left;"> (reserved)</td>
 </tr>
 <tr>
 <td style="text-align:right;">    4   </td>
-<td> </td>
 <td style="text-align:left;"> (reserved)</td>
 </tr>
 <tr>
 <td style="text-align:right;">    3   </td>
-<td> </td>
 <td style="text-align:left;"> (reserved)</td>
 </tr>
 <tr>
 <td style="text-align:right;">    2   </td>
-<td> </td>
 <td style="text-align:left;"> event support</td>
 </tr>
 <tr>
 <td style="text-align:right;">        </td>
-<td> </td>
 <td style="text-align:left;"> <code>xxxx x0xx</code>: client doesn&rsquo;t support events (GPIs)</td>
 </tr>
 <tr>
 <td style="text-align:right;">        </td>
-<td> </td>
 <td style="text-align:left;"> <code>xxxx x1xx</code>: client supports events</td>
 </tr>
 <tr>
 <td style="text-align:right;">  1-0   </td>
-<td> </td>
 <td style="text-align:left;"> acknowledge type</td>
 </tr>
 <tr>
 <td style="text-align:right;">        </td>
-<td> </td>
 <td style="text-align:left;"> <code>xxxx xx00</code>: no acknowledge  (=> events must be queried using a command or an interrupt is triggered at the client)</td>
 </tr>
 <tr>
 <td style="text-align:right;">        </td>
-<td> </td>
 <td style="text-align:left;"> <code>xxxx xx01</code>: ACKs only  (ACK may contain a reference to an event)</td>
 </tr>
 <tr>
 <td style="text-align:right;">        </td>
-<td> </td>
 <td style="text-align:left;"> <code>xxxx xx10</code>: ACKs and simpleACKs (ACK may contain a reference to an event)</td>
 </tr>
 <tr>
 <td style="text-align:right;">        </td>
-<td> </td>
 <td style="text-align:left;"> <code>xxxx xx11</code>: (reserved)</td>
 </tr>
 </tbody>
 </table>
-</li>
-</ul>
 </li>
 <li><p><strong>item</strong></p>
 
@@ -199,67 +244,49 @@
 <thead>
 <tr>
 <th style="text-align:left;"> definition                                     </th>
-<th> </th>
-<th style="text-align:right;"> # bytes  </th>
-<th> </th>
+<th style="text-align:right;"> #&nbsp;bytes  </th>
 <th style="text-align:left;"> description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">  <code>'N' '=' &lt;up to 32 chars&gt;</code>                    </td>
-<td> </td>
 <td style="text-align:right;">   <code>&lt;=32</code> </td>
-<td> </td>
 <td style="text-align:left;"> <strong>name</strong> of display / module</td>
 </tr>
 <tr>
 <td style="text-align:left;">  <code>'V' '=' &lt;major version&gt; '.' &lt;minor version&gt;</code> </td>
-<td> </td>
 <td style="text-align:right;">   <code>&lt;= 4</code> </td>
-<td> </td>
 <td style="text-align:left;"> <strong>version</strong> of VSSDCP, major version in <code>[0, 99]</code>, minor version in <code>[0, 9]</code></td>
 </tr>
 <tr>
 <td style="text-align:left;">  <code>'W' '=' &lt;width&gt;</code>                             </td>
-<td> </td>
 <td style="text-align:right;">    <code>= 2</code> </td>
-<td> </td>
 <td style="text-align:left;"> <strong>width</strong> of display, width in <code>[0, 65535]</code></td>
 </tr>
 <tr>
 <td style="text-align:left;">  <code>'H' '=' &lt;height&gt;</code>                            </td>
-<td> </td>
 <td style="text-align:right;">    <code>= 2</code> </td>
-<td> </td>
 <td style="text-align:left;"> <strong>height</strong> of display, height in <code>[0, 65535]</code></td>
 </tr>
 <tr>
 <td style="text-align:left;">  <code>'P' '=' &lt;bpp&gt;</code>                               </td>
-<td> </td>
 <td style="text-align:right;">    <code>= 1</code> </td>
-<td> </td>
 <td style="text-align:left;"> <strong>bitplanes</strong> used, bpp in <code>[0, 255]</code></td>
 </tr>
 <tr>
 <td style="text-align:left;">  <code>'C' '=' &lt;colour format&gt;</code>                     </td>
-<td> </td>
 <td style="text-align:right;">   <code>&lt;= 8</code> </td>
-<td> </td>
 <td style="text-align:left;"> <strong>colour format</strong>, eg. <code>RGB565</code>, sum of colour channel depths must match bpp</td>
 </tr>
 <tr>
 <td style="text-align:left;">  <code>'B' '=' &lt;buffersize times 8&gt;</code>                </td>
-<td> </td>
 <td style="text-align:right;">    <code>= 1</code> </td>
-<td> </td>
 <td style="text-align:left;"> <strong>buffersize * 8</strong>: max buffersize for a single payload</td>
 </tr>
 <tr>
 <td style="text-align:left;">  <code>'F' '=' features</code>                            </td>
-<td> </td>
 <td style="text-align:right;">          </td>
-<td> </td>
 <td style="text-align:left;"> <em>see features</em></td>
 </tr>
 </tbody>
@@ -283,71 +310,49 @@
 <table>
 <thead>
 <tr>
-<th style="text-align:left;"> feature          </th>
-<th> </th>
-<th> </th>
+<th style="text-align:left;"> feature </th>
 <th style="text-align:left;"> description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">  <code>'A' &lt;value&gt;</code>   </td>
-<td> </td>
-<td> </td>
+<td style="text-align:left;">  <code>'A'&lt;value&gt;</code>   </td>
 <td style="text-align:left;"> acknowledge-type (see flags)</td>
 </tr>
 <tr>
-<td style="text-align:left;">  <code>'b' (0 | 1)</code>  </td>
-<td> </td>
-<td> </td>
-<td style="text-align:left;"> backlight support yes (1) or no (0)</td>
+<td style="text-align:left;">  `&lsquo;b&rsquo;(0 </td>
+<td style="text-align:left;"> 1)`   | backlight support yes (1) or no (0)</td>
 </tr>
 <tr>
-<td style="text-align:left;">  <code>'e' (0 | 1)</code>  </td>
-<td> </td>
-<td> </td>
-<td style="text-align:left;"> self-emitting yes (1) or no (0)</td>
+<td style="text-align:left;">  `&lsquo;e&rsquo;(0 </td>
+<td style="text-align:left;"> 1)`   | self-emitting yes (1) or no (0)</td>
 </tr>
 <tr>
-<td style="text-align:left;">  <code>'i' (0 | 1)</code>  </td>
-<td> </td>
-<td> </td>
-<td style="text-align:left;"> server can invert image (1) or not (0)</td>
+<td style="text-align:left;">  `&lsquo;i&rsquo;(0 </td>
+<td style="text-align:left;"> 1)`   | server can invert image (1) or not (0)</td>
 </tr>
 <tr>
-<td style="text-align:left;">  <code>'p' (0 | 1)</code>  </td>
-<td> </td>
-<td> </td>
-<td style="text-align:left;"> server cannot set a single pixel (1) or can set a single pixel (0)</td>
+<td style="text-align:left;">  `&lsquo;p&rsquo;(0 </td>
+<td style="text-align:left;"> 1)`   | server cannot set a single pixel (1) or can set a single pixel (0)</td>
 </tr>
 <tr>
-<td style="text-align:left;">  <code>'u' (0 | 1)</code>  </td>
-<td> </td>
-<td> </td>
-<td style="text-align:left;"> commit changes: extra update command needed (0) or drawing commands update immediately (1)</td>
+<td style="text-align:left;">  `&lsquo;u&rsquo;(0 </td>
+<td style="text-align:left;"> 1)`   | commit changes: extra update command needed (0) or drawing commands update immediately (1)</td>
 </tr>
 <tr>
-<td style="text-align:left;">  <code>'B' &lt;value&gt;</code>   </td>
-<td> </td>
-<td> </td>
+<td style="text-align:left;">  <code>'B'&lt;value&gt;</code>   </td>
 <td style="text-align:left;"> brightness support, 0: not supported, > 0: max supported level</td>
 </tr>
 <tr>
-<td style="text-align:left;">  <code>'C' (0 | 1)</code>  </td>
-<td> </td>
-<td> </td>
-<td style="text-align:left;"> contrast support yes (1) or no (0)</td>
+<td style="text-align:left;">  `&lsquo;C&rsquo;(0 </td>
+<td style="text-align:left;"> 1)`   | contrast support yes (1) or no (0)</td>
 </tr>
 <tr>
-<td style="text-align:left;">  <code>'I' &lt;value&gt;</code>   </td>
-<td> </td>
-<td> </td>
+<td style="text-align:left;">  <code>'I'&lt;value&gt;</code>   </td>
 <td style="text-align:left;"> amount of GPIs, 0: not supported / no GPIs, > 1: amount of GPIs</td>
 </tr>
 <tr>
-<td style="text-align:left;">  <code>'O' &lt;value&gt;</code>   </td>
-<td> </td>
-<td> </td>
+<td style="text-align:left;">  <code>'O'&lt;value&gt;</code>   </td>
 <td style="text-align:left;"> amount of GPOs, 0: not supported / no GPOs, > 1: amount of GPOs</td>
 </tr>
 </tbody>
@@ -526,46 +531,32 @@
 <thead>
 <tr>
 <th style="text-align:center;"> feature ID   </th>
-<th> </th>
-<th> </th>
 <th style="text-align:left;"> description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:center;">    <code>'b'</code>     </td>
-<td> </td>
-<td> </td>
 <td style="text-align:left;"> backlight, 0: backlight off, 1: backlight on</td>
 </tr>
 <tr>
 <td style="text-align:center;">    <code>'c'</code>     </td>
-<td> </td>
-<td> </td>
 <td style="text-align:left;"> contrast, <code>[0 .. 10]</code>, normalisation a.s.o. is done by the server</td>
 </tr>
 <tr>
 <td style="text-align:center;">    <code>'i'</code>     </td>
-<td> </td>
-<td> </td>
 <td style="text-align:left;"> invert screen, 0: normal display, 1: inverted display</td>
 </tr>
 <tr>
 <td style="text-align:center;">    <code>'B'</code>     </td>
-<td> </td>
-<td> </td>
 <td style="text-align:left;"> brightness, <code>[0 .. max value]</code>   (see above)</td>
 </tr>
 <tr>
 <td style="text-align:center;">    <code>'I'</code>     </td>
-<td> </td>
-<td> </td>
 <td style="text-align:left;"> enable/disable GPIs, 0: disable GPI events, 1: enable GPI events</td>
 </tr>
 <tr>
 <td style="text-align:center;">    <code>'O'</code>     </td>
-<td> </td>
-<td> </td>
 <td style="text-align:left;"> enable/disable GPOs, 0: disable GPO events, 1: enable GPO events</td>
 </tr>
 </tbody>
@@ -630,116 +621,84 @@ if only <code>R</code> is active: <code>[ -1, 0, -1, -1 ]</code> => display is e
 <thead>
 <tr>
 <th style="text-align:left;"> colourOrder              </th>
-<th> </th>
 <th style="text-align:left;"> colourChannel            </th>
-<th> </th>
 <th style="text-align:left;"> resulting colour format</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;"> <code>[ 3, 2, 1, 0 ]</code>         </td>
-<td> </td>
 <td style="text-align:left;">                          </td>
-<td> </td>
 <td style="text-align:left;"> order <code>B</code>, <code>G</code>, <code>R</code>, <code>A</code> is used</td>
 </tr>
 <tr>
 <td style="text-align:left;">                          </td>
-<td> </td>
 <td style="text-align:left;"> <code>[ 8, 8, 8, 8 ]</code>         </td>
-<td> </td>
 <td style="text-align:left;"> all 4 channels have 8 planes</td>
 </tr>
 <tr>
 <td style="text-align:left;">                          </td>
-<td> </td>
 <td style="text-align:left;">                          </td>
-<td> </td>
 <td style="text-align:left;"> => colour format is <code>BGRA8888</code></td>
 </tr>
 <tr>
 <td style="text-align:left;"> &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; </td>
-<td> </td>
 <td style="text-align:left;"> &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; </td>
-<td> </td>
 <td style="text-align:left;"> &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</td>
 </tr>
 <tr>
 <td style="text-align:left;"> <code>[ -1, 0, 1, 2 ]</code>        </td>
-<td> </td>
 <td style="text-align:left;">                          </td>
-<td> </td>
 <td style="text-align:left;"> RGB is used, alpha channel is not used ( = -1 )</td>
 </tr>
 <tr>
 <td style="text-align:left;">                          </td>
-<td> </td>
 <td style="text-align:left;"> <code>[ 0, 5, 6, 5]</code>          </td>
-<td> </td>
 <td style="text-align:left;"> alpha: not used, red: 5 planes, green: 6 planes, blue: 5 planes</td>
 </tr>
 <tr>
 <td style="text-align:left;">                          </td>
-<td> </td>
 <td style="text-align:left;">                          </td>
-<td> </td>
 <td style="text-align:left;"> => colour format is <code>RGB565</code></td>
 </tr>
 <tr>
 <td style="text-align:left;"> &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; </td>
-<td> </td>
 <td style="text-align:left;"> &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; </td>
-<td> </td>
 <td style="text-align:left;"> &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</td>
 </tr>
 <tr>
 <td style="text-align:left;"> <code>[ -1, 0, -1, -1]</code>       </td>
-<td> </td>
 <td style="text-align:left;">                          </td>
-<td> </td>
 <td style="text-align:left;"> only red is active -> monochrome or greyscale</td>
 </tr>
 <tr>
 <td style="text-align:left;">                          </td>
-<td> </td>
 <td style="text-align:left;"> <code>[ 0, 1, 0, 0]</code>          </td>
-<td> </td>
 <td style="text-align:left;"> only one plane -> monochrome</td>
 </tr>
 <tr>
 <td style="text-align:left;">                          </td>
-<td> </td>
 <td style="text-align:left;">                          </td>
-<td> </td>
 <td style="text-align:left;"> => colour format is <code>K1</code></td>
 </tr>
 <tr>
 <td style="text-align:left;"> &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; </td>
-<td> </td>
 <td style="text-align:left;"> &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; </td>
-<td> </td>
 <td style="text-align:left;"> &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</td>
 </tr>
 <tr>
 <td style="text-align:left;"> <code>[ -1, 0, -1, -1]</code>       </td>
-<td> </td>
 <td style="text-align:left;">                          </td>
-<td> </td>
 <td style="text-align:left;"> only red is active -> monochrome or greyscale</td>
 </tr>
 <tr>
 <td style="text-align:left;">                          </td>
-<td> </td>
 <td style="text-align:left;"> <code>[ 0, 4, 0, 0]</code>          </td>
-<td> </td>
 <td style="text-align:left;"> four planes -> greyscale</td>
 </tr>
 <tr>
 <td style="text-align:left;">                          </td>
-<td> </td>
 <td style="text-align:left;">                          </td>
-<td> </td>
 <td style="text-align:left;"> => colour format is <code>K4</code></td>
 </tr>
 </tbody>
@@ -772,3 +731,4 @@ if only <code>R</code> is active: <code>[ -1, 0, -1, -1 ]</code> => display is e
 </li>
 </ul>
 
+</body></html>

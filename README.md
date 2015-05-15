@@ -74,14 +74,13 @@ Usage
 One of the VSSDCP_* classes (VSSDCP_serial, VSSDCP_ethernet, VSSDCP_uipethernet) needs to initialise a class that passes
 the commands to the display library.
 
-E.g.:
+e.g.:
 
 ```
 class VSSDCP_somedisplay : public VSSDCP_serial {
          VSSDCP_somedisplay (void) { }
   void   setup              (void) { /* setup display module, setup VSSDCP */ }
 }
-
 ```
 
 VSSDCP_base contains some examples.
