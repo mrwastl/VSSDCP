@@ -18,39 +18,29 @@
 #define DISP_320x240
 
 
-// uncomment only required #include-lines, change only corresponding "#if 0" to "#if 1"
-// comment out all other lines, especially #include-lines !
-// (or else arduino IDE will use them all for compiling - and will eventually fail (or waste memory))
+// START OF DRIVER SELECTION
+// uncomment only required #include-lines
+// comment out ALL other #include-lines !
+// if more than one driver is enabled an #error will be thrown when compiling
+// this is an arduino-IDE specific limitation that can't be solved nicely with #if 0 / #if 1 ...
+
+// // VSSDCP_SERIAL - communication via serial / USB
+#include <VSSDCP_serial.h>
 
 // // VSSDCP_ETHERNET - communication via EtherShield-Board (W5100)
 //#include <VSSDCP_ethernet.h>
 //#include <Ethernet.h>
 //#include <SPI.h>
-#if 0
-  #define VSSDCP_ETHERNET
-  byte mac[] = { 0x90, 0xA2, 0xDA, 0x00, 0x53, 0x6B };
-  IPAddress ip(10,0,0, 177);
-  //EthernetServer server(9876);
-  #define PORT 9876
-#endif
 
 // // VSSDCP_UIPETHERNET - communication via ENC28J60 ethernet board
-#include <VSSDCP_uipethernet.h>
-#include <UIPEthernet.h>
-#if 1
-  #define VSSDCP_UIPETHERNET
-  byte mac[] =  { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
-  IPAddress ip(10,0,0,177);
-  //EthernetServer server(9876);
-  #define PORT 9876
-#endif
+//#include <VSSDCP_uipethernet.h>
+//#include <UIPEthernet.h>
 
-// // VSSDCP_SERIAL - communication via serial / USB
-// //   BAUD 0 is fine with Teensy 3.x
-//#include <VSSDCP_serial.h>
-#if 0
-  #define VSSDCP_SERIAL
-  #define BAUD           0
+// END OF DRIVER SELECTION
+
+
+#if defined(VSSDCP_SERIAL)
+  #define BAUD           0    // BAUD 0 is fine for Teensy 3.x
   //#define BAUD        9600
   //#define BAUD       57600
   //#define BAUD      115200
@@ -62,6 +52,13 @@
   //#define BAUD     1000000
   //#define BAUD     1152000
   //#define BAUD     1500000
+#elif defined(VSSDCP_ETHERNET) || defined(VSSDCP_UIPETHERNET)
+  byte mac[] =  { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+  IPAddress ip(10,0,0,177);
+  //EthernetServer server(9876);
+  #define PORT 9876
+#else
+ #error "No VSSDCP_* driver defined"
 #endif
 
 

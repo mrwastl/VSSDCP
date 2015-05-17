@@ -14,6 +14,15 @@
 #ifndef VSSDCP_ethernet_h
 #define VSSDCP_ethernet_h
 
+// define correct VSSDC_* driver and check for multiple includes
+#if defined(VSSDCP_DRIVER_INCLUDED)
+  #error "Only one VSSDCP_* driver permitted"
+#else
+  #define VSSDCP_DRIVER_INCLUDED
+  #define VSSDCP_ETHERNET
+#endif
+
+
 // special case for arduino-ide
 #if defined(ARDUINO)
   #include "../VSSDCP_base/VSSDCP_base.h"
